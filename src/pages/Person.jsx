@@ -26,7 +26,7 @@ const Person = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:8000/docs?doc_id=${id}`
+        `https://diallo-backend.onrender.com/docs?doc_id=${id}`
       );
       const json = await res.json();
 

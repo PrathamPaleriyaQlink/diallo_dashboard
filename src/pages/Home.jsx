@@ -60,7 +60,7 @@ export default function Home() {
       formData.append("agent_phone_number", patientPhone);
 
       const res = await fetch(
-        `http://localhost:8000/transcribe?tts_model=${ttsModel}`,
+        `https://diallo-backend.onrender.com/transcribe?tts_model=${ttsModel}`,
         {
           method: "POST",
           body: formData,

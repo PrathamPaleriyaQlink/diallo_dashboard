@@ -14,7 +14,7 @@ const Conversation = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/calls");
+      const res = await fetch("https://diallo-backend.onrender.com/calls");
       const json = await res.json();
 
       if (json.success) {
