@@ -4,9 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Divider } from "primereact/divider";
 import { Skeleton } from "primereact/skeleton";
 import { Toast } from "primereact/toast";
-import { Tag } from "primereact/tag";
 import { Card } from "primereact/card";
 import { ProgressBar } from "primereact/progressbar";
+import { Tag } from "primereact/tag";
 
 const Person = () => {
   const { id } = useParams();
@@ -72,17 +72,22 @@ const Person = () => {
               {/* Basic Call Details */}
               <Card title="Basic Details">
                 <p className="mb-1">
-                  <strong>Agent:</strong> {data.agent_name}
+                  <strong>Agent:</strong>{" "}
+                  <Tag value={data.agent_name} severity="info" />
                 </p>
                 <p className="mb-1">
-                  <strong>Customer:</strong> {data.customer_name || "N/A"}
+                  <strong>Patient:</strong>{" "}
+                  <Tag value={data.patient_name} severity="success" />
                 </p>
                 <p className="mb-1">
                   <strong>Agent Phone:</strong> {data.agent_phone_number}
                 </p>
                 <p className="mb-1">
                   <strong>Call Date:</strong>{" "}
-                  {new Date(data.created_at).toLocaleString()}
+                  <Tag
+                    value={new Date(data.created_at.$date).toLocaleString()}
+                    severity="warning"
+                  />
                 </p>
               </Card>
 
@@ -90,26 +95,81 @@ const Person = () => {
 
               {/* Call Overview */}
               <Card title="Call Overview" className="shadow-sm mt-4">
-                <p className="mb-1">
-                  <strong>Disposition:</strong>{" "}
-                  {data.analysis.call_disposition || "N/A"}
+                <p className="mb-2">
+                  <strong>Summary:</strong> {data.analysis.Call_summary}
+                </p>
+                <p className="mb-2">
+                  <strong>Purpose:</strong>{" "}
+                  <Tag value={data.analysis.Call_purpose} severity="info" />
+                </p>
+                <p className="mb-2">
+                  <strong>Overall Sentiment:</strong>{" "}
+                  <Tag
+                    value={data.analysis.Sentiment_overall}
+                    severity={
+                      data.analysis.Sentiment_overall === "positive"
+                        ? "success"
+                        : data.analysis.Sentiment_overall === "negative"
+                        ? "danger"
+                        : "warning"
+                    }
+                  />
                 </p>
                 <p className="mb-1">
-                  <strong>Summary:</strong> {data.analysis.call_summary}
+                  <strong>Agent Sentiment:</strong>{" "}
+                  <Tag
+                    value={data.analysis.Sentiment_by_speaker.Agent_sentiment}
+                    severity={
+                      data.analysis.Sentiment_by_speaker.Agent_sentiment ===
+                      "positive"
+                        ? "success"
+                        : data.analysis.Sentiment_by_speaker.Agent_sentiment ===
+                          "negative"
+                        ? "danger"
+                        : "warning"
+                    }
+                  />
                 </p>
                 <p className="mb-1">
-                  <strong>Area of Improvement:</strong>{" "}
-                  {data.analysis.area_of_improvement}
+                  <strong>Customer Sentiment:</strong>{" "}
+                  <Tag
+                    value={data.analysis.Sentiment_by_speaker.Customer_sentiment}
+                    severity={
+                      data.analysis.Sentiment_by_speaker.Customer_sentiment ===
+                      "positive"
+                        ? "success"
+                        : data.analysis.Sentiment_by_speaker
+                            .Customer_sentiment === "negative"
+                        ? "danger"
+                        : "warning"
+                    }
+                  />
                 </p>
                 <p className="mb-1">
-                  <strong>Purpose:</strong> {data.analysis.purpose}
+                  <strong>Payment Discussed:</strong>{" "}
+                  <Tag
+                    value={data.analysis.Payment_discussed ? "Yes" : "No"}
+                    severity={data.analysis.Payment_discussed ? "success" : "danger"}
+                  />
                 </p>
                 <p className="mb-1">
-                  <strong>Reason for Delay:</strong>{" "}
-                  {data.analysis.reason_for_delay || "N/A"}
+                  <strong>Payment Amount:</strong>{" "}
+                  <Tag value={data.analysis.Payment_amount} severity="warning" />
                 </p>
                 <p className="mb-1">
-                  <strong>Remark:</strong> {data.analysis.remark || "N/A"}
+                  <strong>Follow-up Required:</strong>{" "}
+                  <Tag
+                    value={data.analysis.Follow_up_required ? "Yes" : "No"}
+                    severity={data.analysis.Follow_up_required ? "info" : "secondary"}
+                  />
+                </p>
+                <p className="mb-1">
+                  <strong>Follow-up Details:</strong>{" "}
+                  {data.analysis.Follow_up_details}
+                </p>
+                <p className="mb-1">
+                  <strong>Agent Performance:</strong>{" "}
+                  {data.analysis.Agent_performance}
                 </p>
               </Card>
 
@@ -117,7 +177,7 @@ const Person = () => {
 
               {/* Scores */}
               <Card title="Performance Scores" className="shadow-sm mt-4">
-                {Object.entries(data.analysis.scores || {}).map(
+                {Object.entries(data.analysis.Individual_Scores || {}).map(
                   ([key, value]) => (
                     <div key={key} className="mb-3">
                       <p className="capitalize">{key.replace(/_/g, " ")}:</p>
@@ -128,14 +188,18 @@ const Person = () => {
                     </div>
                   )
                 )}
+                <p className="mt-2">
+                  <strong>Total Score:</strong>{" "}
+                  <Tag value={`${data.analysis.Total_Score}/10`} severity="success" />
+                </p>
               </Card>
 
               <Divider />
 
               {/* Improvements */}
               <Card title="Improvements" className="shadow-sm mt-4">
-                <ul className="list-disc list-inside">
-                  {data.analysis.improvements?.map((point, idx) => (
+                <ul className="list-disc list-inside text-red-500">
+                  {data.analysis.Improvements?.map((point, idx) => (
                     <li key={idx}>{point}</li>
                   ))}
                 </ul>
@@ -143,8 +207,8 @@ const Person = () => {
 
               {/* Positives */}
               <Card title="Positives" className="shadow-sm mt-4">
-                <ul className="list-disc list-inside">
-                  {data.analysis.positives?.map((point, idx) => (
+                <ul className="list-disc list-inside text-green-600">
+                  {data.analysis.Positives?.map((point, idx) => (
                     <li key={idx}>{point}</li>
                   ))}
                 </ul>
@@ -155,7 +219,7 @@ const Person = () => {
             <div>
               {/* Transcript */}
               <Card title="Call Transcript" className="shadow-sm">
-                <div className="border border-gray-300 bg-gray-50 p-5 rounded-md whitespace-pre-line max-h-[400px] overflow-y-auto">
+                <div className="border border-gray-300 bg-gray-50 p-5 rounded-md whitespace-pre-line max-h-[400px] overflow-y-auto text-sm">
                   {data.transcribe}
                 </div>
               </Card>
@@ -164,14 +228,13 @@ const Person = () => {
 
               {/* Marked Transcript */}
               <Card title="Marked Transcript" className="shadow-sm mt-4">
-                <div className="border border-gray-300 bg-gray-50 p-5 rounded-md whitespace-pre-line max-h-[400px] overflow-y-auto">
-                  {data.analysis.marked_transcript &&
-                  data.analysis.marked_transcript.trim() !== ""
-                    ? data.analysis.marked_transcript
-                        .split("\n")
+                <div className="border border-gray-300 bg-yellow-50 p-5 rounded-md whitespace-pre-line max-h-[400px] overflow-y-auto">
+                  {data.analysis.Marked_Transcript &&
+                  data.analysis.Marked_Transcript.trim() !== ""
+                    ? data.analysis.Marked_Transcript.split("\n")
                         .filter((line) => line.trim() !== "")
                         .map((line, idx) => (
-                          <p key={idx} className="mb-2 font-mono text-sm">
+                          <p key={idx} className="mb-2 font-mono text-sm text-red-600">
                             {line}
                           </p>
                         ))
@@ -181,9 +244,15 @@ const Person = () => {
 
               {/* Unresolved Issues */}
               <Card title="Unresolved Issues" className="shadow-sm mt-4">
-                {data.analysis.unresolved_issues?.length > 0
-                  ? data.analysis.unresolved_issues.join(", ")
-                  : "None"}
+                {data.analysis.Unresolved_issues?.length > 0 ? (
+                  <ul className="list-disc list-inside text-orange-600">
+                    {data.analysis.Unresolved_issues.map((issue, idx) => (
+                      <li key={idx}>{issue}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  "None"
+                )}
               </Card>
             </div>
           </div>
