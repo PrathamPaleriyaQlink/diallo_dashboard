@@ -414,7 +414,7 @@ const Person = () => {
 
             {/* Performance Scores */}
             <Panel
-              header="Performance Breakdown"
+              header={`Performance Breakdown, Total Score: ${data.analysis.Total_Score}`}
               className="shadow-sm"
               toggleable
             >
