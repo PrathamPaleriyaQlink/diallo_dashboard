@@ -61,25 +61,26 @@ const Conversation = () => {
                 field="agent_name"
                 header="Agent Name"
                 filter
-                style={{ width: "25%" }}
+                style={{ width: "20%" }}
               />
               <Column
                 field="patient_name"
                 header="Patient Name"
                 filter
-                style={{ width: "25%" }}
+                style={{ width: "20%" }}
               />
               <Column
                 field="bucket"
                 header="Bucket"
                 filter
-                style={{ width: "25%" }}
+                sortable
+                style={{ width: "20%" }}
               />
               <Column
                 field="agent_phone_number"
                 header="Agent Phone Number"
                 filter
-                style={{ width: "25%" }}
+                style={{ width: "20%" }}
               />
               <Column
                 field="created_at"
@@ -88,7 +89,7 @@ const Conversation = () => {
                 body={(rowData) =>
                   new Date(rowData.created_at).toLocaleString()
                 }
-                style={{ width: "25%" }}
+                style={{ width: "20%" }}
               />
             </DataTable>
           ) : (
