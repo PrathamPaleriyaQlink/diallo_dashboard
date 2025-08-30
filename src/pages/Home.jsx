@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
@@ -14,18 +14,58 @@ export default function Home() {
   const [patientName, setPatientName] = useState("");
   const [patientPhone, setPatientPhone] = useState("");
   const [loading, setLoading] = useState(false);
+  const [agentLoading, setAgnetLoading] = useState(false);
   const [analysis, setAnalysis] = useState("");
 
-  const [ttsModel, setTtsModel] = useState("deepgram");
+  const [ttsModel, setTtsModel] = useState("x_bucket");
+  const [agents, setAgents] = useState([]);
+
   const modelOptions = [
-    { label: "G", value: "groq" },
-    { label: "O", value: "openai" },
-    { label: "D", value: "deepgram" },
+    { label: "Bucket-X", value: "x_bucket" },
+    { label: "Bucket-Y", value: "y_bucket" },
   ];
+
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        setAgnetLoading(true)
+        const res = await fetch("https://diallo-backend.onrender.com/agents");
+        const data = await res.json();
+        if (data.success) {
+          setAgents(
+            data.data.map((a) => ({
+              label: a,
+              value: a,
+            }))
+          );
+        } else {
+          toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Failed to fetch agents.",
+            life: 3000,
+          });
+        }
+      } catch (err) {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: err.message,
+          life: 3000,
+        });
+      } finally {
+        setAgnetLoading(false)   
+      }
+    };
+    fetchAgents();
+  }, []);
 
   const handleFileChange = (e) => {
     const f = e.target.files[0];
-    if (f && (f.type.startsWith("audio/") || f.name.toLowerCase().endsWith(".gsm"))) {
+    if (
+      f &&
+      (f.type.startsWith("audio/") || f.name.toLowerCase().endsWith(".gsm"))
+    ) {
       setFile(f);
     } else {
       toast.current.show({
@@ -60,7 +100,7 @@ export default function Home() {
       formData.append("agent_phone_number", patientPhone);
 
       const res = await fetch(
-        `https://diallo-backend.onrender.com/transcribe?tts_model=${ttsModel}`,
+        `https://diallo-backend.onrender.com/transcribe?bucket=${ttsModel}`,
         {
           method: "POST",
           body: formData,
@@ -98,15 +138,15 @@ export default function Home() {
     <div className="w-full lg:w-[60%] space-y-5 p-6 mx-auto my-20">
       <Toast ref={toast} />
       <div className="flex items-center justify-between gap-5">
-      <h2 className="text-2xl mb-4">Upload Call Recording</h2>
+        <h2 className="text-2xl mb-4">Upload Call Recording</h2>
 
-      <Dropdown
-        value={ttsModel}
-        options={modelOptions}
-        onChange={(e) => setTtsModel(e.value)}
-        placeholder="Select Model"
-        className="mb-3 w-40"
-      />
+        <Dropdown
+          value={ttsModel}
+          options={modelOptions}
+          onChange={(e) => setTtsModel(e.value)}
+          placeholder="Select Bucket"
+          className="mb-3 w-40"
+        />
       </div>
 
       <label className="py-4 rounded cursor-pointer hover:bg-gray-300/40 transition-all text-black border border-dotted inline-block w-full text-center">
@@ -126,11 +166,14 @@ export default function Home() {
       )}
 
       <div className="mt-5">
-        <InputText
-          placeholder="Enter agent name"
+        <Dropdown
+          placeholder="Select Agent or Enter New"
           value={agentName}
+          options={agents}
           onChange={(e) => setAgentName(e.target.value)}
           className="w-full"
+          editable
+          loading={agentLoading}
         />
       </div>
       <div>

@@ -70,6 +70,12 @@ const Conversation = () => {
                 style={{ width: "25%" }}
               />
               <Column
+                field="bucket"
+                header="Bucket"
+                filter
+                style={{ width: "25%" }}
+              />
+              <Column
                 field="agent_phone_number"
                 header="Agent Phone Number"
                 filter
