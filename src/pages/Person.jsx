@@ -363,31 +363,6 @@ const Person = () => {
               </div>
             </Panel>
 
-            {/* Marked Transcript */}
-            {data.analysis.Marked_Transcript &&
-              data.analysis.Marked_Transcript.trim() !== "" && (
-                <Panel
-                  header="Marked Transcript"
-                  className="shadow-sm"
-                  toggleable
-                >
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-h-96 overflow-y-auto">
-                    <div className="space-y-3">
-                      {data.analysis.Marked_Transcript.split("\n")
-                        .filter((line) => line.trim() !== "")
-                        .map((line, idx) => (
-                          <div key={idx} className="flex items-start gap-3">
-                            <i className="pi pi-bookmark text-yellow-600 mt-1 flex-shrink-0"></i>
-                            <p className="text-yellow-900 font-mono text-sm">
-                              {line}
-                            </p>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </Panel>
-              )}
-
             {/* Unresolved Issues */}
             <Card title="Unresolved Issues" className="shadow-sm">
               <div className="space-y-3">
