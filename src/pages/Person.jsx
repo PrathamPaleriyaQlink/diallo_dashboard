@@ -189,7 +189,7 @@ const Person = () => {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-400">
-                    Patient
+                    Customer
                   </label>
                   <p className="mt-1 text-gray-900 font-medium">
                     {data.patient_name}

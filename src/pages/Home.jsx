@@ -178,7 +178,7 @@ export default function Home() {
       </div>
       <div>
         <InputText
-          placeholder="Enter patient name"
+          placeholder="Enter Customer Name"
           value={patientName}
           onChange={(e) => setPatientName(e.target.value)}
           className="w-full mb-3"
@@ -186,7 +186,7 @@ export default function Home() {
       </div>
       <div>
         <InputText
-          placeholder="Enter patient phone number"
+          placeholder="Enter Customer Phone Number"
           value={patientPhone}
           onChange={(e) => setPatientPhone(e.target.value)}
           className="w-full mb-3"
