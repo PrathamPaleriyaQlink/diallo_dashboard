@@ -65,7 +65,7 @@ const Conversation = () => {
               />
               <Column
                 field="patient_name"
-                header="Patient Name"
+                header="Customer Name"
                 filter
                 style={{ width: "20%" }}
               />
